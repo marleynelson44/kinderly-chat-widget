@@ -1,137 +1,109 @@
-import React, { useState, useEffect } from "react";
-import "./chatWidget.css";
-
-const CHAT_ENDPOINT = "https://your-backend-domain.com/chat"; // we'll wire later
+import React, { useState } from "react";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
 
-  // show welcome messages on first load
-  useEffect(() => {
-    setMessages([
-      {
-        from: "bot",
-        text: "👋 Hi, I’m Kinderly Support. Is this about an existing order or just a quick question?",
-      },
-      {
-        from: "bot",
-        text: "If it's an order, tell me the email you used at checkout + your order number (looks like #1234) and I can check tracking for you 💛",
-      },
-    ]);
-  }, []);
-
-  // send message
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    const userMsg = { from: "user", text: input };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-
-    try {
-        const res = await fetch(CHAT_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            latest_user_message: userMsg.text,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (data && data.reply) {
-          setMessages((prev) => [
-            ...prev,
-            { from: "bot", text: data.reply },
-          ]);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            {
-              from: "bot",
-              text:
-                "I’m here and reading — I just couldn’t get a reply from the server. You can also reach us at support@kinderly.",
-            },
-          ]);
-        }
-    } catch (err) {
-        console.error(err);
-        setMessages((prev) => [
-          ...prev,
-          {
-            from: "bot",
-            text:
-              "Sorry, I'm having trouble connecting right now. You can drop us a message at support@kinderly and we'll jump in.",
-          },
-        ]);
-    }
+  // Style for the floating chat bubble button
+  const bubbleStyle = {
+    position: "fixed",
+    bottom: "24px",
+    right: "24px",
+    backgroundColor: "#4b6852", // Kinderly green tone
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: "60px",
+    height: "60px",
+    fontSize: "24px",
+    cursor: "pointer",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+    zIndex: 999999,
+    transition: "transform 0.2s ease",
   };
 
-  // handle enter key
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendMessage();
-    }
+  // Style for the chat window container
+  const chatWindowStyle = {
+    position: "fixed",
+    bottom: "100px",
+    right: "24px",
+    width: "320px",
+    maxHeight: "450px",
+    backgroundColor: "#fff",
+    borderRadius: "16px",
+    boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+    display: isOpen ? "flex" : "none",
+    flexDirection: "column",
+    overflow: "hidden",
+    zIndex: 999999,
+  };
+
+  // Chat window header
+  const headerStyle = {
+    backgroundColor: "#4b6852",
+    color: "#fff",
+    padding: "14px 18px",
+    fontWeight: "600",
+    fontSize: "16px",
+  };
+
+  // Chat message area
+  const bodyStyle = {
+    flex: 1,
+    padding: "16px",
+    fontSize: "15px",
+    color: "#333",
+  };
+
+  // Input area
+  const inputContainerStyle = {
+    borderTop: "1px solid #eee",
+    padding: "10px",
+    display: "flex",
+  };
+
+  const inputStyle = {
+    flex: 1,
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    padding: "8px 10px",
+    fontSize: "14px",
+    outline: "none",
+  };
+
+  const sendButtonStyle = {
+    marginLeft: "8px",
+    backgroundColor: "#4b6852",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "8px 14px",
+    cursor: "pointer",
   };
 
   return (
     <>
-      {/* Floating launcher button */}
-      {!isOpen && (
-        <button
-          className="kc-launcher"
-          onClick={() => setIsOpen(true)}
-        >
-          Chat 💬
-        </button>
-      )}
+      {/* Floating chat bubble */}
+      <button
+        style={bubbleStyle}
+        onClick={() => setIsOpen(!isOpen)}
+        onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+        onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
+      >
+        💬
+      </button>
 
       {/* Chat window */}
-      {isOpen && (
-        <div className="kc-chat-window">
-          <div className="kc-header">
-            <div>
-              <div className="kc-title">Kinderly Support</div>
-              <div className="kc-subtitle">No stress — I can help 💛</div>
-            </div>
-            <button
-              className="kc-close-btn"
-              onClick={() => setIsOpen(false)}
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="kc-messages">
-            {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`kc-bubble ${
-                  m.from === "user" ? "kc-user" : "kc-bot"
-                }`}
-              >
-                {m.text}
-              </div>
-            ))}
-          </div>
-
-          <div className="kc-input-row">
-            <textarea
-              className="kc-input"
-              placeholder="Type your message..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-            <button className="kc-send-btn" onClick={sendMessage}>
-              Send
-            </button>
-          </div>
+      <div style={chatWindowStyle}>
+        <div style={headerStyle}>Kinderly Support</div>
+        <div style={bodyStyle}>
+          Hi there 👋 <br />
+          How can we help you today?
         </div>
-      )}
+        <div style={inputContainerStyle}>
+          <input type="text" placeholder="Type a message..." style={inputStyle} />
+          <button style={sendButtonStyle}>Send</button>
+        </div>
+      </div>
     </>
   );
 }
