@@ -1,0 +1,48 @@
+.rcw-launcher {
+  background-color: #4B6852 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15) !important;
+}
+.rcw-widget-container {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Hanken Grotesk",
+    system-ui, sans-serif !important;
+}
+.rcw-header {
+  background-color: #4B6852 !important;
+  color: #ffffff !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+.rcw-title {
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  color: #ffffff !important;
+}
+.rcw-subtitle {
+  font-size: 12px !important;
+  color: #ffffff !important;
+  opacity: 0.9;
+}
+.rcw-response {
+  background-color: #f4f6f4 !important;
+  color: #1a1a1a !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+.rcw-client {
+  background-color: #4B6852 !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+}
+.rcw-new-message {
+  background-color: #ffffff !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.07) !important;
+}
+.rcw-send {
+  background-color: transparent !important;
+  color: #4B6852 !important;
+  font-weight: 600 !important;
+}
