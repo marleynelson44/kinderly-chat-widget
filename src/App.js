@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 
 function App() {
-  const [isOpen, setIsOpen] = useState(true); // start open for now so we can tweak look
+  // start CLOSED in production
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Colors
+  // brand colors
   const kinderlyGreen = "#4b6852";
   const lightBorder = "#e5e5e5";
-  const bgWhite = "#ffffff";
 
-  // Floating launcher button
-  const bubbleStyle = {
+  // floating launcher (the little 💬 button)
+  const bubbleWrapperStyle = {
     position: "fixed",
     bottom: "24px",
     right: "24px",
+    zIndex: 999999,
+  };
+
+  const bubbleButtonStyle = {
     backgroundColor: kinderlyGreen,
     color: "#fff",
     border: "none",
@@ -25,21 +29,20 @@ function App() {
     textAlign: "center",
     cursor: "pointer",
     boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
-    zIndex: 999999,
     transition: "transform 0.2s ease",
   };
 
-  // Chat window wrapper
+  // chat popup window
   const chatWindowStyle = {
     position: "fixed",
     bottom: "96px",
     right: "24px",
     width: "320px",
     maxHeight: "420px",
-    backgroundColor: bgWhite,
+    backgroundColor: "#ffffff",
     borderRadius: "12px",
     boxShadow: "0 18px 48px rgba(0,0,0,0.28)",
-    display: isOpen ? "flex" : "none",
+    display: isOpen ? "flex" : "none", // hide if closed
     flexDirection: "column",
     overflow: "hidden",
     border: `1px solid ${lightBorder}`,
@@ -48,7 +51,6 @@ function App() {
       "-apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Text', system-ui, sans-serif",
   };
 
-  // Header of the chat popup
   const headerStyle = {
     backgroundColor: kinderlyGreen,
     color: "#fff",
@@ -58,10 +60,20 @@ function App() {
     lineHeight: "1.4",
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     borderBottom: `1px solid ${kinderlyGreen}`,
   };
 
-  // Body / message area
+  const closeButtonStyle = {
+    background: "transparent",
+    border: "none",
+    color: "#fff",
+    fontSize: "16px",
+    lineHeight: "1",
+    cursor: "pointer",
+    padding: 0,
+  };
+
   const bodyStyle = {
     flex: 1,
     padding: "16px",
@@ -71,7 +83,6 @@ function App() {
     backgroundColor: "#fff",
   };
 
-  // Little bubble for our welcome message
   const messageBubbleStyle = {
     backgroundColor: "#f5f6f5",
     border: `1px solid ${lightBorder}`,
@@ -84,7 +95,6 @@ function App() {
     boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
   };
 
-  // Input row at the bottom
   const inputRowStyle = {
     borderTop: `1px solid ${lightBorder}`,
     padding: "10px 10px",
@@ -120,10 +130,17 @@ function App() {
 
   return (
     <>
-      {/* Chat window */}
+      {/* Chat popup window */}
       <div style={chatWindowStyle}>
         <div style={headerStyle}>
-          Kinderly Support
+          <span>Kinderly Support</span>
+          <button
+            style={closeButtonStyle}
+            aria-label="Close chat"
+            onClick={() => setIsOpen(false)}
+          >
+            ×
+          </button>
         </div>
 
         <div style={bodyStyle}>
@@ -131,7 +148,13 @@ function App() {
             <div style={{ fontWeight: 500, marginBottom: "4px" }}>
               Hi there <span role="img" aria-label="wave">👋</span>
             </div>
-            <div style={{ fontSize: "13px", lineHeight: "1.5", color: "#444" }}>
+            <div
+              style={{
+                fontSize: "13px",
+                lineHeight: "1.5",
+                color: "#444",
+              }}
+            >
               How can we help you today?
               <br />
               • Order / tracking
@@ -153,16 +176,22 @@ function App() {
         </div>
       </div>
 
-      {/* Floating launcher (bubble) */}
-      <button
-        style={bubbleStyle}
-        onClick={() => setIsOpen(!isOpen)}
-        onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.07)")}
-        onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
-        aria-label="Open chat"
-      >
-        💬
-      </button>
+      {/* Floating bubble launcher */}
+      <div style={bubbleWrapperStyle}>
+        <button
+          style={bubbleButtonStyle}
+          onClick={() => setIsOpen(!isOpen)}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = "scale(1.07)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = "scale(1.0)";
+          }}
+          aria-label="Open chat"
+        >
+          💬
+        </button>
+      </div>
     </>
   );
 }
